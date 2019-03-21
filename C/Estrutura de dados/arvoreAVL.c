@@ -1,7 +1,8 @@
 // Sintese
 //   objetivostruct nodo: Arvore Binaria de Busca Balanceada (AVL): Inclusao, pesquisa, caminhamento (in, pre, pos-order), desenho, delecao
-//   autor...: Edson Francisco da Fonseca
-//   data....: 26/10/2016
+//   autor...: Eduardo Rodrigues de Morais
+//  
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -117,73 +118,74 @@ int menu(void)
     return op;
 }
 
-void incluir(struct tNodo **p, int v)
-{
-    if ((*p) == NULL)
-    {
+void incluir(struct tNodo **p, int v){
+    if ((*p) == NULL){
         (*p) = (struct tNodo *)malloc(sizeof(struct tNodo));
         (*p)->dado = v;
         (*p)->esq = (*p)->dir = NULL;
     }
-    else
-    {
-        if (v < (*p)->dado)
+    else{
+
+        if (v < (*p)->dado){
             incluir(&((*p)->esq), v);
-        if (v > (*p)->dado)
+        }
+            
+        if (v > (*p)->dado){
             incluir(&((*p)->dir), v);
+        }
+            
         balancear(p);
     }
 }
 
-void balancear(struct tNodo **p)
-{
+void balancear(struct tNodo **p){
+
     int fb = fatorBalanceamento(*p);
-    if ((fb == 2) && (fatorBalanceamento((*p)->dir) == 1))
+    if ((fb == 2) && (fatorBalanceamento((*p)->dir) == 1)){
         rotacaoSimplesEsquerda(&(*p));
-    if ((fb == 2) && (fatorBalanceamento((*p)->dir) == -1))
+    }
+        
+    if ((fb == 2) && (fatorBalanceamento((*p)->dir) == -1)){
         rotacaoDuplaEsquerda(&(*p));
-    if ((fb == -2) && (fatorBalanceamento((*p)->esq) == -1))
+    }
+        
+    if ((fb == -2) && (fatorBalanceamento((*p)->esq) == -1)){
         rotacaoSimplesDireita(&(*p));
-    if ((fb == -2) && (fatorBalanceamento((*p)->esq) == 1))
+    }
+        
+    if ((fb == -2) && (fatorBalanceamento((*p)->esq) == 1)){
         rotacaoDuplaDireita(&(*p));
+    }
+        
 }
 
-void excluir(struct tNodo **p, int v)
-{
+void excluir(struct tNodo **p, int v){
     struct tNodo *q;
-    if ((*p) == NULL)
+    
+    if ((*p) == NULL){
         return;
-    if (v < (*p)->dado)
+    } 
+
+    if (v < (*p)->dado){
         excluir(&((*p)->esq), v);
-    else
-    {
-        if (v > (*p)->dado)
+    }else{
+        if (v > (*p)->dado){
             excluir(&((*p)->dir), v);
-        else
-        { // (v == (*p)->dado) == Excluir
-            if (((*p)->esq == NULL) && ((*p)->dir == NULL))
-            {
+        }else{ 
+            if (((*p)->esq == NULL) && ((*p)->dir == NULL)){ // (v == (*p)->dado) == Excluir
                 free(*p);
                 (*p) = NULL;
-            }
-            else
-            {
-                if ((*p)->esq == NULL)
-                {
+            }else{
+                if ((*p)->esq == NULL){
                     q = (*p);
                     (*p) = q->dir;
                     free(q);
-                }
-                else
-                {
-                    if ((*p)->dir == NULL)
-                    {
+                }else{
+                    if ((*p)->dir == NULL){
                         q = (*p);
                         (*p) = q->esq;
                         free(q);
-                    }
-                    else
-                    { // tem 2 filhos
+                    }else{ // tem 2 filhos
                         q = menor((*p)->dir);
                         (*p)->dado = q->dado;
                         excluir(&((*p)->dir), q->dado);
@@ -195,19 +197,20 @@ void excluir(struct tNodo **p, int v)
     balancear(p);
 }
 
-struct tNodo *menor(struct tNodo *p)
-{
-    if (p == NULL)
+struct tNodo *menor(struct tNodo *p){
+    if (p == NULL){
         return NULL;
-    if (p->esq == NULL)
+    }
+        
+    if (p->esq == NULL){
         return p;
+    }
+        
     return menor(p->esq);
 }
 
-void desenharParentese(struct tNodo *p)
-{
-    if (p != NULL)
-    {
+void desenharParentese(struct tNodo *p){
+    if (p != NULL){
         printf("%d[%d](", p->dado, fatorBalanceamento(p));
         desenharParentese(p->esq);
         printf(",");
@@ -216,74 +219,75 @@ void desenharParentese(struct tNodo *p)
     }
 }
 
-void desenhar(struct tNodo *p)
-{
+void desenhar(struct tNodo *p){
     char matrizDesenho[9][16]; // lxc
     int l, c;
-    for (l = 0; l < 9; l++)
-        for (c = 0; c < 16; c++)
+    for (l = 0; l < 9; l++){
+        for (c = 0; c < 16; c++){
             matrizDesenho[l][c] = -1;
+        }
+    }
     desenharMontarMatriz(matrizDesenho, p, 0, 15, 0);
     desenharMatriz(matrizDesenho);
 }
 
-void desenharMontarMatriz(char mat[9][16], struct tNodo *p, int colIni, int colFim, int lin)
-{
+void desenharMontarMatriz(char mat[9][16], struct tNodo *p, int colIni, int colFim, int lin){
     int colMeio = (colIni + colFim) / 2;
-    if (p == NULL)
+    if (p == NULL){
         return;
+    }
     mat[lin][colMeio] = p->dado;
-    if (p->esq != NULL)
-    {
+    if (p->esq != NULL){
         mat[lin + 1][(((colIni + colMeio) / 2) + colMeio) / 2] = '/';
         desenharMontarMatriz(mat, p->esq, colIni, colMeio, lin + 2);
     }
-    if (p->dir != NULL)
-    {
+    if (p->dir != NULL){
         mat[lin + 1][(((colMeio + colFim) / 2) + colMeio) / 2] = '\\';
         desenharMontarMatriz(mat, p->dir, colMeio, colFim, lin + 2);
     }
 }
 
-void desenharMatriz(char mat[9][16])
-{
+void desenharMatriz(char mat[9][16]){
     int l, c;
-    for (l = 0; l < 9; l++)
-    {
-        for (c = 0; c < 16; c++)
-        {
-            if (mat[l][c] == -1)
+    for (l = 0; l < 9; l++){
+        for (c = 0; c < 16; c++){
+            if (mat[l][c] == -1){
                 printf("    ");
-            else if ((mat[l][c] == '\\') || (mat[l][c] == '/'))
+            }else if ((mat[l][c] == '\\') || (mat[l][c] == '/')){
                 printf("  %c ", mat[l][c]);
-            else
+            }else{
                 printf("(%2d)", mat[l][c]);
-        }
+            }
+        }    
         printf("\n");
     }
 }
 
-int altura(struct tNodo *p)
-{
+int altura(struct tNodo *p){
     int dir, esq;
-    if (p == NULL)
+    if (p == NULL){
         return 0;
+    }
+        
     dir = altura(p->esq);
     esq = altura(p->dir);
-    if (dir > esq)
+    
+    if (dir > esq){
         return dir + 1;
+    }
+
     return esq + 1;
 }
 
-int fatorBalanceamento(struct tNodo *p)
-{
-    if (p == NULL)
+int fatorBalanceamento(struct tNodo *p){
+    if (p == NULL){
         return 0;
+    }
+
     return altura(p->dir) - altura(p->esq);
 }
 
-void rotacaoSimplesDireita(struct tNodo **p)
-{
+void rotacaoSimplesDireita(struct tNodo **p){
     struct tNodo *q, *temp;
     q = (*p)->esq;
     temp = q->dir;
@@ -292,8 +296,7 @@ void rotacaoSimplesDireita(struct tNodo **p)
     (*p) = q;
 }
 
-void rotacaoSimplesEsquerda(struct tNodo **p)
-{
+void rotacaoSimplesEsquerda(struct tNodo **p){
     struct tNodo *q, *temp;
     q = (*p)->dir;
     temp = q->esq;
@@ -302,64 +305,60 @@ void rotacaoSimplesEsquerda(struct tNodo **p)
     (*p) = q;
 }
 
-void rotacaoDuplaDireita(struct tNodo **p)
-{
+void rotacaoDuplaDireita(struct tNodo **p){
     rotacaoSimplesEsquerda(&(*p)->esq);
     rotacaoSimplesDireita(&(*p));
 }
 
-void rotacaoDuplaEsquerda(struct tNodo **p)
-{
+void rotacaoDuplaEsquerda(struct tNodo **p){
     rotacaoSimplesDireita(&((*p)->dir));
     rotacaoSimplesEsquerda(&(*p));
 }
 
-struct tNodo *pesquisar(struct tNodo *p, int v)
-{
-    if (p == NULL)
+struct tNodo *pesquisar(struct tNodo *p, int v){
+    if (p == NULL){
         return NULL;
+    }
+        
     printf("%d - ", p->dado);
-    if (v == p->dado)
+
+    if (v == p->dado){
         return p;
-    if (v < p->dado)
+    }
+        
+    if (v < p->dado){
         return pesquisar(p->esq, v);
+    }
+        
     return pesquisar(p->dir, v);
 }
 
-void inOrder(struct tNodo *p)
-{
-    if (p != NULL)
-    {
+void inOrder(struct tNodo *p){
+    if (p != NULL){
         inOrder(p->esq);
         printf("%d - ", p->dado);
         inOrder(p->dir);
     }
 }
 
-void preOrder(struct tNodo *p)
-{
-    if (p != NULL)
-    {
+void preOrder(struct tNodo *p){
+    if (p != NULL){
         printf("%d - ", p->dado);
         preOrder(p->esq);
         preOrder(p->dir);
     }
 }
 
-void posOrder(struct tNodo *p)
-{
-    if (p != NULL)
-    {
+void posOrder(struct tNodo *p){
+    if (p != NULL){
         posOrder(p->esq);
         posOrder(p->dir);
         printf("%d - ", p->dado);
     }
 }
 
-void destruir(struct tNodo *p)
-{
-    if (p != NULL)
-    {
+void destruir(struct tNodo *p){
+    if (p != NULL){
         destruir(p->esq);
         destruir(p->dir);
         free(p);

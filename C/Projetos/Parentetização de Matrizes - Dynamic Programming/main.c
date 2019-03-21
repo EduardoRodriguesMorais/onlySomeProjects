@@ -48,10 +48,6 @@ void escreva (int s[][6],int i, int j){
 	}
 	
 }
-//Quest�o 3: 
-//A Tabela 's' � utilisada para armazenar a ordem das matrizes a serem multiplicadas, como a tabela 'm', mas ao invez que guardar o num�ro de multiplica��es,
-//armazena um 'ID' da matriz a ser multiplicada.
-
 
 
 

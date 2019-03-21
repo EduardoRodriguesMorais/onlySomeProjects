@@ -85,11 +85,14 @@ int main(void) {
 	
   printf("Colisoes: %d\n", espalhamento.posicaoLivre);
   printf("Dispersao:\n");
-  for (i=0;i<44;i++)
+  for (i=0;i<44;i++)  {
     printf("[%d] - Colisao: %d\n", i, espalhamento.tabelaDispersao[i].colisao);
+  }
+    
   printf("Colisao:\n");
-  for (i=0;i<espalhamento.posicaoLivre;i++)
+  for (i=0;i<espalhamento.posicaoLivre;i++){
     printf("[%d] - Nome: %s\n", i, espalhamento.tabelaColisao[i].nome);
-
+  }
+  
   return 0;
 }
