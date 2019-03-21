@@ -1,11 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-Objetivo: Aprender a reconhercer uma porta lógica AND [0 0 0 1] e OR [0 1 1 1]
-Rede Neural para encontrar melhor peso. Problema Linearmente Separável
-
-Pesos aprendidos: 
-    AND = 0,5
-    OR = 1.09
+    Objetivo: Encontrar melhor peso. Reconhece operador AND [0 0 0 1] e OR [0 1 1 1] 
+    (Problema Linearmente Separável)
 """
 
 import numpy as np
