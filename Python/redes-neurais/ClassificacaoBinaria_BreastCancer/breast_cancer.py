@@ -29,6 +29,7 @@ classificador.add(Dense(units = 1, activation = 'sigmoid'))
 classificador.compile(optimizer = 'adam', loss = 'binary_crossentropy',
                       metrics = ['binary_accuracy'])
 
+#Inicia treinamento do modelo. Previsores do treinamento, Classe pro treinamento. Épocas para reajuste dos pesos, épocas de treinamento
 classificador.fit(previsores_treinamento, classe_treinamento,
                   batch_size = 10, epochs = 100)
 
