@@ -4,8 +4,7 @@ FROM python:3.6-alpine
 WORKDIR /usr/src/app
 
 #Copy files
-COPY webhook.py ./
-COPY requirements.txt ./
+COPY ./scripts ./
 
 #Install app dependencies
 RUN apk update && apk add gcc musl-dev libffi-dev openssl-dev
