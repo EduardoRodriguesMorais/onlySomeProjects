@@ -78,36 +78,47 @@ def original_points(box, tst):
 		cv2.circle(tst, (int(x), int(y)), 5, (0, 0, 255), -1)
 	return tst
 
+def defocus_image(img):
+    #Deixa a imagem cinza 
+    img_gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    #Desfoca a imagm usando filtro gaussiano
+    img_gray = cv2.GaussianBlur(img_gray, (7, 7), 0)
+    return img_gray
 
-# load the image, convert it to grayscale, and blur it slightly
-image = cv2.imread("dataset/melanoma/DermMel/test/melanoma/AUG_0_45.jpeg")
+# Realiza detecção de bordas, então realiza uma dilatação para fechar lacunas entre as bordas do objeto
+def find_valors_contours(gray_img):
+    #Realiza detecção de bordas 
+    edged_img = cv2.Canny(gray_img, 50, 100)
+    #Realiza dilatação da imagem
+    edged_img = cv2.dilate(edged_img, None, iterations=1)
+    #Realiza a correção da imagem utilizando áreas de uma viziança de pixels 
+    edged_img = cv2.erode(edged_img, None, iterations=1)    
+    return edged_img
 
-image = generate_mask(image)
+def find_image_countours(edged_img):
+    #Encontrar contornos no mapa de borda
+    cnts_img = cv2.findContours(edged_img.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    #Pega o valor apropriado da tupla 
+    cnts_img = imutils.grab_contours(cnts_img)
+     #Classifica os contornos da esquerda para a direita e inicialize a variável de calibração de "pixels por métrica"
+    (contours_image, _) = imutils.contours.sort_contours(cnts_img)
+    return contours_image
 
-cv2.imshow("Mask", image)
-cv2.waitKey(1)
+def get_contours(image):
+    image_defocus = defocus_image(image)
+    vlrs_contours = find_valors_contours(image_defocus)
+    contours_image = find_image_countours(vlrs_contours)
+    return contours_image
 
-gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-gray = cv2.GaussianBlur(gray, (7, 7), 0)
-
-# perform edge detection, then perform a dilation + erosion to
-# close gaps in between object edges
-edged = cv2.Canny(gray, 50, 100)
-edged = cv2.dilate(edged, None, iterations=1)
-edged = cv2.erode(edged, None, iterations=1)
-
-# find contours in the edge map
-cnts = cv2.findContours(edged.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-cnts = imutils.grab_contours(cnts)
-
-# sort the contours from left-to-right and initialize the
-# 'pixels per metric' calibration variable
-(cnts, _) = contours.sort_contours(cnts)
-
-
-
-result = contours_individually(image, cnts)
-
-cv2.imshow("Image", result)
-cv2.waitKey(1)
+if __name__ == "__main__":
+    # load the image, convert it to grayscale, and blur it slightly
+    image = cv2.imread("dataset/melanoma/DermMel/test/melanoma/AUG_0_45.jpeg")
+    
+    image = generate_mask(image)
+    
+    cntr_ndarray  = get_contours(image)
+    result = contours_individually(image, cntr_ndarray)
+    
+    cv2.imshow("Image", result)
+    cv2.waitKey(1)
         
