@@ -19,21 +19,24 @@ def midpoint(ptA, ptB):
 def contours_individually(image, cnts):
     pixelsPerMetric = None
     orig = image.copy()
-    # loop over the contours individually
+    #Loop individual por canto
     for c in cnts:
-        # if the contour is not sufficiently large, ignore it
-        print(cv2.contourArea(c))
-        
+        #Se os cantos nao forem suficiente mente largos. Ignora        
         if cv2.contourArea(c) < 100:
             continue
-        # compute the rotated bounding box of the contour
         
+        #Calcula a caixa delimitadora gerada do contorno
+        #Define uma estrutura Box2D
         box = cv2.minAreaRect(c)
-        box = cv2.cv.BoxPoints(box) if imutils.is_cv2() else cv2.boxPoints(box)
+        #Define os cantos do retângulo
+        box = cv2.cv.boxPoints(box) if imutils.is_cv2() else cv2.boxPoints(box)
         box = np.array(box, dtype="int")
-        
         box = perspective.order_points(box)
+        
+        #Desenha estrutura da caixa
         cv2.drawContours(orig, [box.astype("int")], -1, (0, 255, 0), 2)
+        
+        #Desenha os pontos
         orig = original_points(box, orig)
         
         (tl, tr, br, bl) = box
@@ -43,30 +46,33 @@ def contours_individually(image, cnts):
         (tlblX, tlblY) = midpoint(tl, bl)
         (trbrX, trbrY) = midpoint(tr, br)
         
-        # draw the midpoints on the image
+        #desenhe os pontos médios na imagem
         cv2.circle(orig, (int(tltrX), int(tltrY)), 5, (255, 0, 0), -1)
         cv2.circle(orig, (int(blbrX), int(blbrY)), 5, (255, 0, 0), -1)
         cv2.circle(orig, (int(tlblX), int(tlblY)), 5, (255, 0, 0), -1)
         cv2.circle(orig, (int(trbrX), int(trbrY)), 5, (255, 0, 0), -1)
-        # draw lines between the midpoints
+        # Desenha linhas entre os pontos médios
         cv2.line(orig, (int(tltrX), int(tltrY)), (int(blbrX), int(blbrY)),(255, 0, 255), 2)
         cv2.line(orig, (int(tlblX), int(tlblY)), (int(trbrX), int(trbrY)),(255, 0, 255), 2)
-        # compute the Euclidean distance between the midpoints
+        
+        #Calcular a distância Euclidiana entre os pontos médios
         dA = dist.euclidean((tltrX, tltrY), (blbrX, blbrY))
         dB = dist.euclidean((tlblX, tlblY), (trbrX, trbrY))
         
-        # if the pixels per metric has not been initialized, then
-		# compute it as the ratio of pixels to supplied metric
-		# (in this case, inches)
+        
+        # Se os pixels por métrica não foram inicializados, então
+        # calcula como a proporção de pixels para a métrica fornecida
+        # (neste caso, polegadas)
         if pixelsPerMetric is None:
             pixelsPerMetric = dB / 0.8
             
-        # compute the size of the object
+        # Calcula o tamanho do objeto
         dimA = dA / pixelsPerMetric
         dimB = dB / pixelsPerMetric
         print(dimA)
         print(dimB)
-        # draw the object sizes on the image
+        
+        # Desenha os tamanhos dos objetos na imagem
         cv2.putText(orig, "{:.1f}cm".format(dimA),(int(tltrX - 15), int(tltrY - 10)), cv2.FONT_HERSHEY_SIMPLEX, 0.65, (255, 255, 255), 2)
         cv2.putText(orig, "{:.1f}cm".format(dimB),(int(trbrX + 10), int(trbrY)), cv2.FONT_HERSHEY_SIMPLEX, 0.65, (255, 255, 255), 2)
     
@@ -119,6 +125,6 @@ if __name__ == "__main__":
     cntr_ndarray  = get_contours(image)
     result = contours_individually(image, cntr_ndarray)
     
-    cv2.imshow("Image", result)
-    cv2.waitKey(1)
-        
+    cv2.startWindowThread()
+    cv2.imshow("Image", result)    
+    cv2.waitKey(2)   
