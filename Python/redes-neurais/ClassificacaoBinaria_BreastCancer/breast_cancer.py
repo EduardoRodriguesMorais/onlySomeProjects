@@ -13,7 +13,7 @@ classes = pd.read_csv("dataset/saidas-breast.csv")
 from sklearn.model_selection import train_test_split
 previsores_treinamento, previsores_treste, classe_treinamento, classe_teste = train_test_split(previsores, classes, test_size=0.25)            
 
-
+import keras
 from keras.models import Sequential
 from keras.layers import Dense
 
@@ -21,12 +21,15 @@ classificador = Sequential()
 #Adiciona forma a novo modelo. 16 camadas de profundidade, função de ativação relu, inicialização randômica, 30 camadas de entrada. 
 classificador.add(Dense(units = 16, activation = 'relu', 
                         kernel_initializer = 'random_uniform', input_dim = 30))
-
+classificador.add(Dense(units = 32, activation = 'relu', 
+                        kernel_initializer = 'random_uniform'))
 #Adiciona camada de saída. 1 neurônio de saída, função de ativação sigmoid 
 classificador.add(Dense(units = 1, activation = 'sigmoid'))
 
+
+optimizer = keras.optimizers.Adam(lr = 0.001, decay = 0.00001, clipvalue = 0.5)
 #Configuta o modelo para treinamento. Calculo de ajuste dos pesos(Descida do Gradiente Adam), classificação binária, métrica para avaliação do modelo
-classificador.compile(optimizer = 'adam', loss = 'binary_crossentropy',
+classificador.compile(optimizer = optimizer, loss = 'binary_crossentropy',
                       metrics = ['binary_accuracy'])
 
 #Inicia treinamento do modelo. Previsores do treinamento, Classe pro treinamento. Épocas para reajuste dos pesos, épocas de treinamento
