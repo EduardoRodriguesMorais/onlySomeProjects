@@ -1,63 +1,86 @@
-#def movimento_rainha():
-#    for(i=i+9; i<64 && i+9==VAZIO; i+=9)// diagonal esquerda superior
-#        peca[i+9]==RAINHA
-#
-#    for(i=i-9; i>=0 && i-9==VAZIO; i-=9)// diagonal direita inferior
-#        peca[i-9]==RAINHA
-#
-#    for(i=i+7; i<64 && i+7==VAZIO; i+=7)// diagonal direita superior
-#        peca[i+7]==RAINHA
-#
-#    for(i=i-7; i>=0 && i-7==VAZIO; i-=7)// diagonal esquerda inferior
-#        peca[i-7]==RAINHA
-#
-#    for(i=i+8; i<64 && i+8==VAZIO; i+=8)// frente superior
-#        peca[i+8]==RAINHA
-#
-#    for(i=i-8; i>=0 && i-8==VAZIO; i-=8)// diagonal direita inferior
-#        peca[i-8]==RAINHA
-#
-#    for(i=i+1; i<64 && i+1==VAZIO; i+=1)// diagonal direita superior
-#        peca[i+1]==RAINHA
-#
-#    for(i=i-1; i>=0 && i-1==VAZIO; i-=1)// diagonal esquerda inferior
-#        peca[i-1]==RAINHA
-
-
-def marque_atacadas(tab):
+def marque_atacadas(tabuleiro, posicao_X, posicao_Y):
     """
     Altera tab marcando as posicoes atacadas por R com X
     """
-    # escreva a sua funcao aqui
-def main():
-    
-    x = ('| x ','| x ','| x ','| x ','| x ','| x ','| x ','| x ')
+    #Anda horizontal direita
+    for y in range(posicao_Y+1, len(tabuleiro)): 
+        tabuleiro[posicao_X][y] = '|\033[1;31m M \033[0;0m' 
 
-    tabuleiro = [ list(x),
-                    list(x),
-                    list(x),
-                    list(x),
-                    list(x),
-                    list(x),
-                    list(x),
-                    list(x) ]
+    #Anda horizontal esquerda
+    for y in range(0, posicao_Y): 
+        tabuleiro[posicao_X][y] = '|\033[1;31m M \033[0;0m' 
+
+    #Anda vertical subindo
+    for x in range(posicao_X-1, -1, -1):
+        tabuleiro[x][posicao_Y] = '|\033[1;31m M \033[0;0m' 
     
-    marque_atacadas(tabuleiro)
+    #Anda vertical descendo
+    for x in range(posicao_X+1, 8, 1):
+        tabuleiro[x][posicao_Y] = '|\033[1;31m M \033[0;0m' 
     
-    define_rainha(tabuleiro, 7, 3)
-    
-    imprime_tabuleiro(tabuleiro)
-    
+    #Anda diagonal direita descendo    
+    y_rainha = posicao_Y
+    for x in range(posicao_X+1, 8, 1):    
+        y_rainha += 1
+        if y_rainha < 0 or y_rainha > 7:
+            break
+        tabuleiro[x][y_rainha] = '|\033[1;31m M \033[0;0m'
+
+    #Anda diagonal esquerda subindo
+    y_rainha = posicao_Y
+    for x in range(posicao_X-1, -1, -1 ):  
+        y_rainha -= 1
+        if y_rainha < 0:
+            break
+        tabuleiro[x][y_rainha] = '|\033[1;31m M \033[0;0m' 
+
+    #Anda diagonal esquerda descendo
+    y_rainha = posicao_Y
+    for x in range(posicao_X+1, 8, 1):    
+        y_rainha -= 1
+        if y_rainha < 0 or y_rainha > 7:
+            break
+        tabuleiro[x][y_rainha] = '|\033[1;31m M \033[0;0m'
+
+    #Anda diagonal direita subindo
+    y_rainha = posicao_Y
+    for x in range(posicao_X-1, -1, -1 ):  
+        y_rainha += 1
+        if y_rainha < 0 or y_rainha > 7:
+            break
+        tabuleiro[x][y_rainha] = '|\033[1;31m M \033[0;0m' 
+
 
 def define_rainha(tabuleiro, posicao_X, posicao_Y):
-    tabuleiro[posicao_X][posicao_Y] = '| R '
+    tabuleiro[posicao_X][posicao_Y] = '|\033[1;32m R \033[0;0m'
     
 def imprime_tabuleiro(tabuleiro):
     for x in range(len(tabuleiro)):
-        print("-------------------------------")
+        print(" ---------------------------------")
         for y in range(len(tabuleiro)):
             print(tabuleiro[x][y], end="")
         print("| \n")
+    
+def main():
+    posicao_X = int(input("Informe a posição X: "))-1
+    posicao_Y = int(input("Informe a posição Y: "))-1
+    
+    x = ('| x ','| x ','| x ','| x ','| x ','| x ','| x ','| x ')
+
+    tabuleiro= [list(x),
+                list(x),
+                list(x),
+                list(x),
+                list(x),
+                list(x),
+                list(x),
+                list(x)]
+    
+    define_rainha(tabuleiro, posicao_X, posicao_Y)
+    
+    marque_atacadas(tabuleiro, posicao_X, posicao_Y)
+        
+    imprime_tabuleiro(tabuleiro)
 
 if __name__ == "__main__":
     main()
